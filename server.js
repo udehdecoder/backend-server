@@ -3,27 +3,44 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const knex = require('knex')
 const bcrypt = require('bcryptjs')
-// import bcrypt from 'bcryptjs';
 const register = require('./controllers/register');
 const signin = require('./controllers/signin')
 const image = require('./controllers/image')
 const profile = require('./controllers/profile')
-// const salt = bcrypt.genSaltSync(10);
-// // const hash= bcrypt.hashSync()
+require("dotenv").config();
+const PORT = process.env.db_PORT;
+const DATABASE_URL = process.env.DATABASE_URL;
 
-const db = knex({
+// const salt = bcrypt.genSaltSync(10);
+//     const hash= bcrypt.hashSync()
+    console.log("port", PORT)
+    console.log("database url", DATABASE_URL)
+
+
+    const db = knex({
     client: 'pg',
     connection:{
-        host : '127.0.0.1',
-        user: 'postgres',
-        password : '267088',
-        database :'smart-brain'
+    connectionString: process.env.DATABASE_URL,
+    ssl: {rejectUnauthorized: false}
+  
     }
-})
+    })
+
+
+// const db = knex({
+//     client: 'pg',
+//     connection:{
+//         host : '5432',
+//         user: 'postgres',
+//         password : '267088',
+//         database :'smart-brain'
+//     }
+// })
+
 
 db.select('*').from('users')
 .then(info => {
- 
+//  console.log()
 });
 const app = express();
 
@@ -86,8 +103,8 @@ app.get('/profile/:id', (req, res) =>{
     // console.log(!found)
 })
 app.put('/image', (req, res) => {image.imageHandler(req,res,db)})
-app.listen(3000, () =>{
-    console.log('app is running at port 3000')
+app.listen(PORT, () =>{
+    console.log('app is running at', PORT)
 })
 
 //
